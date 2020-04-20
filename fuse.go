@@ -133,6 +133,14 @@ type Conn struct {
 	proto Protocol
 }
 
+func (c *Conn) Dev() *os.File {
+	return c.dev
+}
+
+func (c *Conn) Proto() Protocol {
+	return c.proto
+}
+
 // MountpointDoesNotExistError is an error returned when the
 // mountpoint does not exist.
 type MountpointDoesNotExistError struct {
@@ -178,6 +186,16 @@ func Mount(dir string, options ...MountOption) (*Conn, error) {
 	}
 
 	return c, nil
+}
+
+func NewConn(dev *os.File, proto Protocol) *Conn {
+	ready := make(chan struct{})
+	close(ready)
+	return &Conn{
+		Ready: ready,
+		dev: dev,
+		proto: proto,
+	}
 }
 
 type OldVersionError struct {

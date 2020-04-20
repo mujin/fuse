@@ -2,12 +2,30 @@ package fuse
 
 import (
 	"fmt"
+	"strings"
+	"strconv"
 )
 
 // Protocol is a FUSE protocol version number.
 type Protocol struct {
 	Major uint32
 	Minor uint32
+}
+
+func ParseProtocolString(v string) Protocol {
+	proto := Protocol{}
+	parts := strings.Split(v, ".")
+	if len(parts) > 0 {
+		if i, err := strconv.Atoi(parts[0]); err == nil {
+			proto.Major = uint32(i)
+		}
+	}
+	if len(parts) > 1 {
+		if i, err := strconv.Atoi(parts[1]); err == nil {
+			proto.Minor = uint32(i)
+		}
+	}
+	return proto
 }
 
 func (p Protocol) String() string {
